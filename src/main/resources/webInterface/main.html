@@ -1,0 +1,241 @@
+<html>
+	<head>
+	   <script src="javascript/utils.js"></script>
+	    
+	   <link rel="stylesheet" type="text/css" href="css/semantic.css"/>
+ 	   
+
+	
+		<script>
+
+ 		colors=["red","orange","yellow","olive","green","teal","blue","violet","purple","pink","brown","grey","black"];
+		servletsMap=new Map();
+
+		
+		$(document).ready(function() {
+		
+		
+		
+			reloadServlet();
+			reloadMemory();
+			setInterval(reloadServlet, 5000);
+			setInterval(reloadMemory, 5000);
+			hideAll();
+			$("#servlets").show();
+			
+			function hideAll()
+			{
+				$(".displayable").hide();
+			}
+			
+			
+			$("#AuthorizeTestButton").click(function(e){
+				url=document.location.origin + "/authorize?response_type=code&client_id=TEST&redirect_uri=" + document.location.origin + "/callback&scope=rules&state=" + guid();
+				$("#urlTest").html(url);
+				$("#authorizeTest").modal({
+					onApprove : function() {
+												top.location.href=url;
+												//getValueFromUrl(url,true,function(feedback){
+												//	top.location.href="/grant.html";
+												//});
+										    }
+				}).modal('show');
+			});
+		
+			$(".displayableClick").click(function(e){
+				
+				hideAll();
+				name=$(this).attr("name");
+				$("#" + name).show();
+			});
+			
+			$("body").delegate(".stats", 'click', function(e){
+				id=$(this).attr("id");
+				displayStatistics(servletsMap.get(id).accessByOrigin);
+				
+			});
+		
+			function displayStatistics(accessByOrigin)
+			{
+				$("#chartServlet").html("");
+				i=0;
+				max=-1;
+				for (var key in accessByOrigin) {
+					
+						  if (accessByOrigin.hasOwnProperty(key)) {
+						    //alert(key + " -> " +accessByOrigin[key]);
+							$("#chartServlet").append("<div id=" + key + " class=\"ui " + colors[i] + " progress\" data-value=" + accessByOrigin[key]  + " ><div  class=\"bar dynbar\"></div><div class=\"label\">" + accessByOrigin[key] + " access for " + key +"</div></div>");
+							if ( accessByOrigin[key] > max)
+							{
+								max=accessByOrigin[key];
+							}
+						  }
+					i++;
+					}
+				//$("#chartServlet").html(html);
+				
+				$("body").find(".progress").progress(
+					{
+						total: (max * 1.5)
+					}
+				);
+			}
+		
+			function reloadServlet()
+			{
+				
+				getValueFromUrl("admin?action=servletCheck",true,function (servlets){
+					try{
+						servletz=JSON.parse(servlets);
+						html="";
+						for ( i=0;i<servletz.length;i++)
+						{
+							servletsMap.set(servletz[i].name,servletz[i]);
+							html+="<tr>";
+								html+="<td class=\"collapsing\">";
+									html+="<i class=\"bullseye icon\"></i>"  +  servletz[i].name;
+								html+="</td>";
+								html+="<td>";
+									html+=servletz[i].endPoint;
+								html+="</td>";
+								html+="<td>";
+									html+=servletz[i].nbAccess  + " access since started";
+								html+="</td>";
+								html+="<td>";
+									html+="Started since " + msToTime(Date.now() - servletz[i].startTime);
+								html+="</td>";
+								html+="<td>";
+									html+=servletz[i].responseTime + "ms";
+								html+="</td>";
+								html+="<td>";
+									html+="<button id=" + servletz[i].name + " class=\"mini ui button stats\">Display stats by origin</button>";
+								html+="</td>";
+							html+="</tr>";
+						}
+						$("#servletsTable").html(html);
+					}catch (e)
+					{
+						
+					}
+					
+				});
+				
+			}
+			
+			function reloadMemory()
+			{
+				
+				getValueFromUrl("admin?action=getMemory",true,function (memory){
+					try{
+						memories=JSON.parse(memory);
+						percent=parseFloat(memories.used) * 100 / parseFloat(memories.max);
+						//console.log(percent + " " +memories.used + " " + memories.max);
+						used=parseFloat(memories.used) * 1024;
+						total=parseFloat(memories.max) * 1024;
+						//console.log(used + " " +total);
+						$('#memory')
+						  .progress({
+							percent: percent,
+							value: used,
+							total: total,
+						    text: {
+						      active  : 'Using {value} of {total} megabytes',
+						    }
+						  })
+						;
+						
+					}catch (e)
+					{
+						
+					}
+					
+				});
+				
+			}
+
+		});					
+		</script>
+
+   	</head>
+	<body>
+	
+		<div class=memory>
+		    <div id=memory class="ui tiny indicating progress">
+	  			<div class="bar"></div>
+	  			<div class="label">Memory</div>
+			</div>
+		</div>
+		<div id=menu>
+			<div class="ui vertical menu">
+				  <a name=servlets class="active teal item displayableClick">
+				    Servlet's states
+				    <div class="ui teal left pointing label displayableClick">5</div>
+				  </a>
+				  <a name=generate class="item displayableClick">
+				    Generate key XuGb45GHodV1TquFa
+				  </a>
+				  <a name=test class="active teal item displayableClick">
+				    Tests
+				  </a>
+				  <a name=router class="item displayableClick">
+				    Router rules
+				    <div class="ui label">51</div>
+				  </a>
+				  <a name=logs class="item displayableClick">
+				    Logs
+				    <div class="ui label">1252</div>
+				  </a>
+		 			<a class="item">
+				    Logout
+				  </a>
+			</div>
+		</div>
+		<br><br>
+		<div id=servlets class="displayable">
+			<table  class="ui celled striped table">
+				  <thead>
+				    <tr>
+						<th colspan="6">
+				      			Servlet's Health
+				    	</th>
+				  	</tr>
+				  </thead>
+				  <tbody id=servletsTable>
+				    
+				  </tbody>
+			</table>
+			<div id=chartServlet style=height:200px;width:300px;left:200px;position:relative>
+			</div>
+		</div>
+		<div style=position:relative;left:10px id=test class="displayable">
+		
+				<button id=AuthorizeTestButton class="ui primary button">OAuth2 Login test</button>
+		
+			
+		</div>
+	
+	
+	
+	<div id=authorizeTest class="ui basic modal">
+		  <div class="ui icon header">
+		    <i class="user secret icon"></i>
+		    This action, will test authorize hotpoint in order to have authorization token
+		  </div>
+		  <div class="content">
+		    <p><div id=urlTest></div></p>
+		  </div>
+		  <div class="actions">
+		    <div class="ui red basic cancel inverted button">
+		      <i class="remove icon"></i>
+		      Cancel
+		    </div>
+		    <div class="ui green ok inverted button">
+		      <i class="checkmark icon"></i>
+		      Continue
+		    </div>
+		  </div>
+	</div>
+	
+	
+	</body>
+</html>

@@ -1,0 +1,101 @@
+<html>
+	<head>
+	   <script src="javascript/utils.js"></script>
+
+	   <link rel="stylesheet" type="text/css" href="css/semantic.css"/>
+ 	   
+
+	
+		<script>
+
+ 		
+
+		
+		$(document).ready(function() {
+		
+			client_id=getUrlVars("client_id");
+			state=getUrlVars("state");
+			redirect_uri=getUrlVars("redirect_uri");
+			code=getUrlVars("code");
+			back=getUrlVars("back");
+			$("#clientId").html(client_id);
+			$("#state").html(state);
+			$("#redirect_uri").html(redirect_uri);
+			$("#back_uri").html(back);
+			$("#code").html(code);
+			
+			$("#auth").click(function(e){
+				url=redirect_uri + "?code=" + code + "&state=" + state;
+				top.location.href=url;
+			});
+			
+			$("#back").click(function(e){
+				url=back;
+				top.location.href=url;
+			});
+			
+			$("#deny").click(function(e){
+				url=back;
+				top.location.href=url;
+			});
+			
+		});					
+		</script>
+
+   	</head>
+	<body>
+	
+		<button id=back class="ui primary button">Cancel and go back to home</button>
+		
+			<div class="ui card">
+			  <div class="content">
+			    <div class="header">Authorization requested</div>
+			  </div>
+			  <div class="content">
+			    <h4 class="ui sub header">Details</h4>
+			    <div class="ui small feed">
+			      <div class="event">
+			        <div class="content">
+			          <div class="summary">
+			             <a id=clientId></a> claims authorization to PimpMyOauth2 project
+			          </div>
+			        </div>
+			      </div>
+			      <div class="event">
+			        <div class="content">
+			          <div class="summary">
+			             State <a id=state></a>
+			          </div>
+			        </div>
+			      </div>
+				  <div class="event">
+			        <div class="content">
+			          <div class="summary">
+			             Code <a id=code></a>
+			          </div>
+			        </div>
+			      </div>
+					<div class="event">
+			        <div class="content">
+			          <div class="summary">
+			             Back_uri <a id=back_uri></a>
+			          </div>
+			        </div>
+			      </div>
+				  <div class="event">
+			        <div class="content">
+			          <div class="summary">
+			             Redirect_uri <a id=redirect_uri></a>
+			          </div>
+			        </div>
+			      </div>
+			   
+			    </div>
+			  </div>
+			  <div class="extra content">
+			    <button id=auth class="ui button">Authorize</button>
+				<button id=deny class="ui button">Deny</button>
+			  </div>
+			</div>
+	</body>
+</html>

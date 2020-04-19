@@ -1,0 +1,5 @@
+<pimpmyoauth.beans.User>
+  <description>Administrator</description>
+  <name>admin</name>
+  <password>admin</password>
+</pimpmyoauth.beans.User>

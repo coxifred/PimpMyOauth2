@@ -1,0 +1,62 @@
+body {
+ 
+ background-color: white;
+ margin:0;
+ padding:0;
+ -webkit-background-size: cover; /* pour anciens Chrome et Safari */
+ background-size: cover; /* version standardis�e */
+}
+
+.noselect{
+	-webkit-touch-callout: text; /* iOS Safari */
+    -webkit-user-select: text; /* Safari */
+     -khtml-user-select: text; /* Konqueror HTML */
+       -moz-user-select: text; /* Old versions of Firefox */
+        -ms-user-select: text; /* Internet Explorer/Edge */
+            user-select: text; /* Non-prefixed version, currently*/
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+.loginForm {
+  width: 298px;
+  position: fixed;
+  left:300px;
+  top:340px;	
+	border-color: rgb(128, 128, 128);
+	border-style: solid;
+	border-width: 5px;
+}
+
+.textField {
+  	
+	font-size: 14px;
+	font-family: "Verdana";
+	padding:2px;
+}
+
+.loginButton {
+  height:50px;
+  width:102px;
+  top:-1px;
+  right:-4px;
+  position: absolute;	
+}
+
+
+
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+
+
+
